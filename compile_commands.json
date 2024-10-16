@@ -21,10 +21,38 @@
       "include/",
       "-o",
       "main.exe",
+      "src/io.c"
+    ],
+    "directory": "/home/foics/code/C/learn-opengl",
+    "file": "/home/foics/code/C/learn-opengl/src/io.c",
+    "output": "/home/foics/code/C/learn-opengl/main.exe"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-I",
+      "include/",
+      "-o",
+      "main.exe",
       "src/main.c"
     ],
     "directory": "/home/foics/code/C/learn-opengl",
     "file": "/home/foics/code/C/learn-opengl/src/main.c",
+    "output": "/home/foics/code/C/learn-opengl/main.exe"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-I",
+      "include/",
+      "-o",
+      "main.exe",
+      "src/shader.c"
+    ],
+    "directory": "/home/foics/code/C/learn-opengl",
+    "file": "/home/foics/code/C/learn-opengl/src/shader.c",
     "output": "/home/foics/code/C/learn-opengl/main.exe"
   }
 ]
