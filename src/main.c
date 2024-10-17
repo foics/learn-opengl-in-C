@@ -4,6 +4,8 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
 
 #include "shader.h"
 
@@ -24,9 +26,6 @@ Uint32 time_left(void) {
 
 const int WIDTH = 1280;
 const int HEIGHT = 720;
-
-float greenValue = 0.0f;
-bool greenValueInc = true;
 
 bool should_quit = false;
 
@@ -74,10 +73,16 @@ int main(int argc, char *argv[]) {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     float vertices[] = {
-        // positions        //colors
-        0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   // bottom left
-        0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f  // top
+        // positions        //colors           // texture coords
+        0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,  // top right
+        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,  // bottom right
+       -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,  // bottom left
+       -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f   // top left
+    };
+
+    unsigned int indices[] = {
+        0, 1, 3,
+        1, 2, 3
     };
 
     unsigned int VAO;
@@ -86,22 +91,85 @@ int main(int argc, char *argv[]) {
     unsigned int VBO;
     glGenBuffers(1, &VBO);
 
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     // xyz
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    // tex coords
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 
     unsigned int shader_default = RenderShaderCreate("./shaders/default.vert", "./shaders/default.frag");
+
+    unsigned int texture1, texture2;
+    // texture 1
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    // or extends to give texture border
+    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, (float[]){1, 1, 0, 1});
+
+    // textures scaled lower are more pixilated and scaled higher are kinda blurry instead
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, numColorChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load("./assets/container.png", &width, &height, &numColorChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        printf("Failed to load texture container.png\n");
+    }
+
+    // we can free the image data after making the TexImage
+    stbi_image_free(data);
+
+    // texture 2
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    // or extends to give texture border
+    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, (float[]){1, 1, 0, 1});
+
+    // textures scaled lower are more pixilated and scaled higher are kinda blurry instead
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    data = stbi_load("./assets/awesomeface.png", &width, &height, &numColorChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        printf("Failed to load texture: awesomeface.png");
+    }
+
+    stbi_image_free(data);
+
     glUseProgram(shader_default);
+
+    glUniform1i(glGetUniformLocation(shader_default, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shader_default, "texture2"), 1);
 
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
@@ -120,32 +188,15 @@ int main(int argc, char *argv[]) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Possibly the 2 ugliest if statements in the world
-        // if (greenValue > 1) {
-        //     greenValueInc = false;
-        // } else if (greenValue < 0) {
-        //     greenValueInc = true;
-        // }
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
 
-        // if (greenValueInc) {
-        //     greenValue += 0.005;
-        // } else {
-        //     greenValue -= 0.005;
-        // }
-
-        // printf("Green Value: %f\n", greenValue);
-        // int vertexColorLocation = glGetUniformLocation(shader_default, "ourColor");
-
-        // if (vertexColorLocation == -1) {
-        //     printf("No uniform location could be found for vertexColorLocation.\n");
-        //     return -1;
-        // }
-
-        // // we use 4f to get the 4 floats of the uniform value
-        // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+        glUseProgram(shader_default);
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // render end; swaps buffers aka renders changes
