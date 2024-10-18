@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+#include <linmath.h>
 
 #include "shader.h"
 
@@ -24,8 +25,8 @@ Uint32 time_left(void) {
     }
 }
 
-const int WIDTH = 1280;
-const int HEIGHT = 720;
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
 bool should_quit = false;
 
@@ -171,6 +172,26 @@ int main(int argc, char *argv[]) {
     glUniform1i(glGetUniformLocation(shader_default, "texture1"), 0);
     glUniform1i(glGetUniformLocation(shader_default, "texture2"), 1);
 
+    // vec4 vec = {1.0f, 0.0f, 0.0f, 1.0f};
+    // mat4x4 trans;
+    // mat4x4_identity(trans);
+    // mat4x4_translate(trans, 1.0f, 1.0f, 0.0f);
+    // vec4 result;
+    // mat4x4_mul_vec4(result, trans, vec);
+    // for (int i = 0; i < 4; i++) {
+    //     printf("%f ", result[i]);
+    // }
+    // printf("\n");
+
+    // mat4x4 trans;
+    // mat4x4_identity(trans);
+    // mat4x4 rot;
+    // mat4x4_rotate(rot, trans, 0.0f, 0.0f, 1.0f, (90 * (M_PI / 180)));
+    // mat4x4 result;
+    // mat4x4_scale_aniso(result, rot, 0.5f, 0.5f, 0.5f);
+
+    float rotTimer = 0.0f;
+
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
         SDL_Event event;
@@ -184,6 +205,8 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        rotTimer++;
+
         // render begin
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -193,7 +216,16 @@ int main(int argc, char *argv[]) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
+        mat4x4 transform;
+        mat4x4_identity(transform);
+        mat4x4_translate(transform, 0.5f, -0.5f, 0.0f);
+        mat4x4 result;
+        mat4x4_rotate(result, transform, 0.0f, 0.0f, 1.0f, rotTimer / 100);
+
         glUseProgram(shader_default);
+
+        unsigned int transformLoc = glGetUniformLocation(shader_default, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, (const GLfloat*)result);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
