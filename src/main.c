@@ -73,12 +73,50 @@ int main(int argc, char *argv[]) {
     // wireframe rendering
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    glEnable(GL_DEPTH_TEST);
+
     float vertices[] = {
-        // positions        //colors           // texture coords
-        0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,  // top right
-        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,  // bottom right
-       -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,  // bottom left
-       -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f   // top left
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     unsigned int indices[] = {
@@ -104,14 +142,11 @@ int main(int argc, char *argv[]) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // xyz
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
     // tex coords
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 
@@ -190,6 +225,19 @@ int main(int argc, char *argv[]) {
     // mat4x4 result;
     // mat4x4_scale_aniso(result, rot, 0.5f, 0.5f, 0.5f);
 
+    float cubePositions[] = {
+        0.0f, 0.0f, 0.0f,
+        2.0f, 5.0f, -15.0f,
+        -1.5f, -2.2f, -2.5f,
+        -3.8f, -2.0f, -12.3f,
+        2.4f, -0.4f, -3.5f,
+        -1.7f, 3.0f, -7.5f,
+        1.3f, -2.0f, -2.5f,
+        1.5f, 2.0f, -2.5f,
+        1.5f, 0.2f, -1.5f,
+        -1.3f, 1.0f, -1.5f
+    };
+
     float rotTimer = 0.0f;
 
     next_time = SDL_GetTicks() + TICK_INTERVAL;
@@ -209,26 +257,42 @@ int main(int argc, char *argv[]) {
 
         // render begin
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        mat4x4 transform;
-        mat4x4_identity(transform);
-        mat4x4_translate(transform, 0.5f, -0.5f, 0.0f);
-        mat4x4 result;
-        mat4x4_rotate(result, transform, 0.0f, 0.0f, 1.0f, rotTimer / 100);
+        mat4x4 view;
+        mat4x4_translate(view, 0.0f, 0.0f, -3.0f);
+
+        mat4x4 projection;
+        mat4x4_perspective(projection, 45.0f * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
 
         glUseProgram(shader_default);
 
-        unsigned int transformLoc = glGetUniformLocation(shader_default, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, (const GLfloat*)result);
+        unsigned int viewLoc = glGetUniformLocation(shader_default, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat*)view);
+
+        unsigned int projectionLoc = glGetUniformLocation(shader_default, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat*)projection);
 
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        for (int i = 0; i < 10; i++) {
+
+            mat4x4 model;
+            mat4x4_identity(model);
+            mat4x4_translate(model, cubePositions[i * 3], cubePositions[i * 3 + 1], cubePositions[i * 3 + 2]);
+            float angle = 20.0f * i + 15.0f;
+            mat4x4 result;
+            mat4x4_rotate(result, model, 1.0f, 0.3f, 0.5f, (rotTimer / 100) * angle * (M_PI / 180));
+
+            unsigned int modelLoc = glGetUniformLocation(shader_default, "model");
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat*)result);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         glBindVertexArray(0);
 
         // render end; swaps buffers aka renders changes
