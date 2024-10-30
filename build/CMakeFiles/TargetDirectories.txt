@@ -1,0 +1,3 @@
+/home/foics/code/C/learn-opengl/build/CMakeFiles/main.exe.dir
+/home/foics/code/C/learn-opengl/build/CMakeFiles/edit_cache.dir
+/home/foics/code/C/learn-opengl/build/CMakeFiles/rebuild_cache.dir

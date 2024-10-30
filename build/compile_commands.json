@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/home/foics/code/C/learn-opengl/build",
+  "command": "/usr/bin/cc  -I/home/foics/code/C/learn-opengl/include -g -o CMakeFiles/main.exe.dir/src/glad.c.o -c /home/foics/code/C/learn-opengl/src/glad.c",
+  "file": "/home/foics/code/C/learn-opengl/src/glad.c",
+  "output": "CMakeFiles/main.exe.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/foics/code/C/learn-opengl/build",
+  "command": "/usr/bin/cc  -I/home/foics/code/C/learn-opengl/include -g -o CMakeFiles/main.exe.dir/src/io.c.o -c /home/foics/code/C/learn-opengl/src/io.c",
+  "file": "/home/foics/code/C/learn-opengl/src/io.c",
+  "output": "CMakeFiles/main.exe.dir/src/io.c.o"
+},
+{
+  "directory": "/home/foics/code/C/learn-opengl/build",
+  "command": "/usr/bin/cc  -I/home/foics/code/C/learn-opengl/include -g -o CMakeFiles/main.exe.dir/src/main.c.o -c /home/foics/code/C/learn-opengl/src/main.c",
+  "file": "/home/foics/code/C/learn-opengl/src/main.c",
+  "output": "CMakeFiles/main.exe.dir/src/main.c.o"
+},
+{
+  "directory": "/home/foics/code/C/learn-opengl/build",
+  "command": "/usr/bin/cc  -I/home/foics/code/C/learn-opengl/include -g -o CMakeFiles/main.exe.dir/src/shader.c.o -c /home/foics/code/C/learn-opengl/src/shader.c",
+  "file": "/home/foics/code/C/learn-opengl/src/shader.c",
+  "output": "CMakeFiles/main.exe.dir/src/shader.c.o"
+}
+]
