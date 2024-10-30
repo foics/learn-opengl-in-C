@@ -1,3 +1,4 @@
+#include <SDL2/SDL_mouse.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -28,7 +29,106 @@ Uint32 time_left(void) {
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
+float xPos = WIDTH / 2, yPos = HEIGHT / 2;
+
 bool should_quit = false;
+
+vec3 cameraPos = {0.0f, 0.0f, 3.0f};
+vec3 cameraFront = {0.0f, 0.0f, -1.0f};
+vec3 cameraUp = {0.0f, 1.0f, 0.0f};
+
+float fov = 45.0f;
+
+float yaw = -90.0f;
+float pitch = 0;
+
+void input_handler(SDL_KeyboardEvent *e) {
+    const float cameraSpeed = 0.05f;
+
+    if (e->type == SDL_KEYDOWN) {
+        if (e->keysym.sym == SDLK_w) {
+            vec3 result;
+            vec3_scale(result, cameraFront, cameraSpeed);
+            vec3_add(cameraPos, cameraPos, result);
+        } else if (e->keysym.sym == SDLK_s) {
+            vec3 result;
+            vec3_scale(result, cameraFront, cameraSpeed);
+            vec3_sub(cameraPos, cameraPos, result);
+        }
+
+        if (e->keysym.sym == SDLK_a) {
+            vec3 result;
+            vec3_mul_cross(result, cameraFront, cameraUp);
+            vec3 normalized;
+            vec3_norm(normalized, result);
+            vec3 final;
+            vec3_scale(final, normalized, cameraSpeed);
+            vec3_sub(cameraPos, cameraPos, final);
+        } else if (e->keysym.sym == SDLK_d) {
+            vec3 result;
+            vec3_mul_cross(result, cameraFront, cameraUp);
+            vec3 normalized;
+            vec3_norm(normalized, result);
+            vec3 final;
+            vec3_scale(final, normalized, cameraSpeed);
+            vec3_add(cameraPos, cameraPos, final);
+        }
+    } else if (e->state == SDL_RELEASED) {
+        if (e->keysym.sym == SDLK_w) {
+            return;
+        } else if (e->keysym.sym == SDLK_s) {
+            return;
+        }
+
+        if (e->keysym.sym == SDLK_a) {
+            return;
+        } else if (e->keysym.sym == SDLK_d) {
+            return;
+        }
+    }
+}
+
+bool firstMouse = false;
+void mouse_callback(SDL_Event *event) {
+    xPos = event->motion.xrel;
+    yPos = event->motion.yrel;
+
+    if (firstMouse) {
+        xPos = 0;
+        yPos = 0;
+        firstMouse = false;
+    }
+
+    // float xOffset = xPos - lastX;
+    // float yOffset = lastY - yPos;
+    // lastX = xPos;
+    // lastY = yPos;
+
+    const float sensitivity = 0.005f;
+    yaw -= fmod(xPos * sensitivity, 360.0f);
+    pitch += yPos * sensitivity;
+
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    vec3 direction;
+    direction[0] = cos(yaw * (M_PI / 180)) * cos(pitch * (M_PI / 180));
+    direction[1] = sin(pitch * (M_PI / 180));
+    direction[2] = sin(yaw * (M_PI / 180)) * cos(pitch * (M_PI / 180));
+    vec3_norm(cameraFront, direction);
+
+    printf("Mouse Position: (%f, %f)\n", xPos, yPos);
+}
+
+void scroll_callback(SDL_Event *event) {
+    fov -= (float)event->wheel.y;
+    if (fov < 1.0f)
+        fov = 1.0f;
+    if (fov > 45.0f)
+        fov = 45.0f;
+}
 
 int main(int argc, char *argv[]) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -74,6 +174,9 @@ int main(int argc, char *argv[]) {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_DEPTH_TEST);
+
+    SDL_SetRelativeMouseMode(true);
+    SDL_ShowCursor(true);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -240,6 +343,9 @@ int main(int argc, char *argv[]) {
 
     float rotTimer = 0.0f;
 
+    float xPos = 0.0;
+    float yPos = 0.0;
+
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
         SDL_Event event;
@@ -247,6 +353,16 @@ int main(int argc, char *argv[]) {
             switch (event.type) {
                 case SDL_QUIT:
                     should_quit = true;
+                    break;
+                case SDL_KEYDOWN:
+                case SDL_KEYUP:
+                    input_handler(&event.key);
+                    break;
+                case SDL_MOUSEMOTION:
+                    mouse_callback(&event);
+                    break;
+                case SDL_MOUSEWHEEL:
+                    scroll_callback(&event);
                     break;
                 default:
                     break;
@@ -264,19 +380,21 @@ int main(int argc, char *argv[]) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        mat4x4 view;
-        mat4x4_translate(view, 0.0f, 0.0f, -3.0f);
-
-        mat4x4 projection;
-        mat4x4_perspective(projection, 45.0f * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
-
         glUseProgram(shader_default);
 
-        unsigned int viewLoc = glGetUniformLocation(shader_default, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat*)view);
+        mat4x4 projection;
+        mat4x4_perspective(projection, fov * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
 
         unsigned int projectionLoc = glGetUniformLocation(shader_default, "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat*)projection);
+
+        mat4x4 view;
+        vec3 cameraOrigin;
+        vec3_add(cameraOrigin, cameraPos, cameraFront);
+        mat4x4_look_at(view, cameraPos, cameraOrigin, cameraUp);
+
+        unsigned int viewLoc = glGetUniformLocation(shader_default, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat*)view);
 
         glBindVertexArray(VAO);
         for (int i = 0; i < 10; i++) {
