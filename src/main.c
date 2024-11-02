@@ -1,3 +1,4 @@
+#include <SDL2/SDL_hints.h>
 #include <SDL2/SDL_mouse.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +30,7 @@ Uint32 time_left(void) {
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-float xPos = WIDTH / 2, yPos = HEIGHT / 2;
+float lastX = WIDTH / 2, lastY = HEIGHT / 2;
 
 bool should_quit = false;
 
@@ -90,23 +91,23 @@ void input_handler(SDL_KeyboardEvent *e) {
 
 bool firstMouse = false;
 void mouse_callback(SDL_Event *event) {
-    xPos = event->motion.xrel;
-    yPos = event->motion.yrel;
+    float xPos = event->motion.x;
+    float yPos = event->motion.y;
 
     if (firstMouse) {
-        xPos = 0;
-        yPos = 0;
+        lastX = xPos;
+        lastY = yPos;
         firstMouse = false;
     }
 
-    // float xOffset = xPos - lastX;
-    // float yOffset = lastY - yPos;
-    // lastX = xPos;
-    // lastY = yPos;
+    float xOffset = xPos - lastX;
+    float yOffset = lastY - yPos;
+    lastX = xPos;
+    lastY = yPos;
 
-    const float sensitivity = 0.005f;
-    yaw -= fmod(xPos * sensitivity, 360.0f);
-    pitch += yPos * sensitivity;
+    const float sensitivity = 0.1f;
+    yaw += xOffset * sensitivity;
+    pitch += yOffset * sensitivity;
 
     if (pitch > 89.0f)
         pitch = 89.0f;
@@ -175,8 +176,8 @@ int main(int argc, char *argv[]) {
 
     glEnable(GL_DEPTH_TEST);
 
-    SDL_SetRelativeMouseMode(true);
-    SDL_ShowCursor(true);
+    SDL_SetRelativeMouseMode(false);
+    SDL_ShowCursor(false);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,

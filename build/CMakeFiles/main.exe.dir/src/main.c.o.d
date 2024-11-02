@@ -1,6 +1,6 @@
 CMakeFiles/main.exe.dir/src/main.c.o: \
  /home/foics/code/C/learn-opengl/src/main.c /usr/include/stdc-predef.h \
- /usr/include/SDL2/SDL_mouse.h /usr/include/SDL2/SDL_stdinc.h \
+ /usr/include/SDL2/SDL_hints.h /usr/include/SDL2/SDL_stdinc.h \
  /usr/include/SDL2/SDL_config.h /usr/include/SDL2/SDL_platform.h \
  /usr/include/SDL2/begin_code.h /usr/include/SDL2/close_code.h \
  /usr/include/sys/types.h /usr/include/features.h \
@@ -48,10 +48,11 @@ CMakeFiles/main.exe.dir/src/main.c.o: \
  /usr/include/bits/mathcalls-helper-functions.h \
  /usr/include/bits/mathcalls.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/float.h \
- /usr/include/SDL2/SDL_error.h /usr/include/SDL2/SDL_video.h \
- /usr/include/SDL2/SDL_pixels.h /usr/include/SDL2/SDL_endian.h \
- /usr/include/SDL2/SDL_rect.h /usr/include/SDL2/SDL_rwops.h \
- /usr/include/SDL2/SDL_surface.h /usr/include/SDL2/SDL_blendmode.h \
+ /usr/include/SDL2/SDL_mouse.h /usr/include/SDL2/SDL_error.h \
+ /usr/include/SDL2/SDL_video.h /usr/include/SDL2/SDL_pixels.h \
+ /usr/include/SDL2/SDL_endian.h /usr/include/SDL2/SDL_rect.h \
+ /usr/include/SDL2/SDL_rwops.h /usr/include/SDL2/SDL_surface.h \
+ /usr/include/SDL2/SDL_blendmode.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
  /usr/include/SDL2/SDL.h /usr/include/SDL2/SDL_main.h \
  /usr/include/SDL2/SDL_assert.h /usr/include/SDL2/SDL_atomic.h \
