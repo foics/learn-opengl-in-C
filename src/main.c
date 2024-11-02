@@ -104,9 +104,9 @@ void mouse_callback(SDL_Event *event) {
     // lastX = xPos;
     // lastY = yPos;
 
-    const float sensitivity = 0.005f;
-    yaw -= fmod(xPos * sensitivity, 360.0f);
-    pitch += yPos * sensitivity;
+    const float sensitivity = 0.1f;
+    yaw += xPos * sensitivity;
+    pitch -= yPos * sensitivity;
 
     if (pitch > 89.0f)
         pitch = 89.0f;
@@ -177,6 +177,8 @@ int main(int argc, char *argv[]) {
 
     SDL_SetRelativeMouseMode(true);
     SDL_ShowCursor(true);
+
+    SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
