@@ -1,12 +1,9 @@
-#include <SDL2/SDL_mouse.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
 #include <linmath.h>
 
 #include "shader.h"
@@ -147,47 +144,47 @@ int main(int argc, char *argv[]) {
     SDL_ShowCursor(false);
 
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f
     };
 
     unsigned int indices[] = {
@@ -213,103 +210,33 @@ int main(int argc, char *argv[]) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // xyz
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // tex coords
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
     unsigned int shader_default = RenderShaderCreate("./shaders/default.vert", "./shaders/default.frag");
-
-    unsigned int texture1, texture2;
-    // texture 1
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    // or extends to give texture border
-    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, (float[]){1, 1, 0, 1});
-
-    // textures scaled lower are more pixilated and scaled higher are kinda blurry instead
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height, numColorChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load("./assets/container.png", &width, &height, &numColorChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        printf("Failed to load texture container.png\n");
-    }
-
-    // we can free the image data after making the TexImage
-    stbi_image_free(data);
-
-    // texture 2
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    // or extends to give texture border
-    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, (float[]){1, 1, 0, 1});
-
-    // textures scaled lower are more pixilated and scaled higher are kinda blurry instead
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    data = stbi_load("./assets/awesomeface.png", &width, &height, &numColorChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        printf("Failed to load texture: awesomeface.png");
-    }
-
-    stbi_image_free(data);
+    unsigned int shader_light = RenderShaderCreate("./shaders/light.vert", "./shaders/light.frag");
 
     glUseProgram(shader_default);
 
-    glUniform1i(glGetUniformLocation(shader_default, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(shader_default, "texture2"), 1);
+    unsigned int objectColor = glGetUniformLocation(shader_default, "objectColor");
+    glUniform3f(objectColor, 1.0f, 0.5f, 0.31f);
 
-    // vec4 vec = {1.0f, 0.0f, 0.0f, 1.0f};
-    // mat4x4 trans;
-    // mat4x4_identity(trans);
-    // mat4x4_translate(trans, 1.0f, 1.0f, 0.0f);
-    // vec4 result;
-    // mat4x4_mul_vec4(result, trans, vec);
-    // for (int i = 0; i < 4; i++) {
-    //     printf("%f ", result[i]);
-    // }
-    // printf("\n");
+    unsigned int lightColor = glGetUniformLocation(shader_default, "lightColor");
+    glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
 
-    // mat4x4 trans;
-    // mat4x4_identity(trans);
-    // mat4x4 rot;
-    // mat4x4_rotate(rot, trans, 0.0f, 0.0f, 1.0f, (90 * (M_PI / 180)));
-    // mat4x4 result;
-    // mat4x4_scale_aniso(result, rot, 0.5f, 0.5f, 0.5f);
-
-    float cubePositions[] = {
-        0.0f, 0.0f, 0.0f,
-        2.0f, 5.0f, -15.0f,
-        -1.5f, -2.2f, -2.5f,
-        -3.8f, -2.0f, -12.3f,
-        2.4f, -0.4f, -3.5f,
-        -1.7f, 3.0f, -7.5f,
-        1.3f, -2.0f, -2.5f,
-        1.5f, 2.0f, -2.5f,
-        1.5f, 0.2f, -1.5f,
-        -1.3f, 1.0f, -1.5f
-    };
 
     float rotTimer = 0.0f;
+
+    vec3 lightPos = {1.2f, 1.0f, -2.0f};
 
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
@@ -329,13 +256,8 @@ int main(int argc, char *argv[]) {
         rotTimer++;
 
         // render begin
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
 
         glUseProgram(shader_default);
 
@@ -353,21 +275,43 @@ int main(int argc, char *argv[]) {
         unsigned int viewLoc = glGetUniformLocation(shader_default, "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat*)view);
 
+        mat4x4 model;
+        mat4x4_identity(model);
+
+        unsigned int modelLoc = glGetUniformLocation(shader_default, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat*)model);
+
         glBindVertexArray(VAO);
-        for (int i = 0; i < 10; i++) {
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-            mat4x4 model;
-            mat4x4_identity(model);
-            mat4x4_translate(model, cubePositions[i * 3], cubePositions[i * 3 + 1], cubePositions[i * 3 + 2]);
-            float angle = 20.0f * i + 15.0f;
-            mat4x4 result;
-            mat4x4_rotate(result, model, 1.0f, 0.3f, 0.5f, (rotTimer / 100) * angle * (M_PI / 180));
+        glUseProgram(shader_light);
 
-            unsigned int modelLoc = glGetUniformLocation(shader_default, "model");
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat*)result);
+        mat4x4 lightProjection;
+        mat4x4_perspective(lightProjection, fov * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        unsigned int lightProjectionLoc = glGetUniformLocation(shader_light, "projection");
+        glUniformMatrix4fv(lightProjectionLoc, 1, GL_FALSE, (const GLfloat*)lightProjection);
+
+        mat4x4 lightView;
+        vec3 lightCameraOrigin;
+        vec3_add(lightCameraOrigin, cameraPos, cameraFront);
+        mat4x4_look_at(lightView, cameraPos, cameraOrigin, cameraUp);
+
+        unsigned int lightViewLoc = glGetUniformLocation(shader_light, "view");
+        glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, (const GLfloat*)lightView);
+
+        mat4x4 lightModel;
+        mat4x4_identity(lightModel);
+        mat4x4_translate(lightModel, lightPos[0], lightPos[1], lightPos[2]);
+        // for whatever reason only the aniso func works
+        mat4x4_scale_aniso(lightModel, lightModel, 0.2f, 0.2f, 0.2f);
+
+        unsigned int lightModelLoc = glGetUniformLocation(shader_light, "model");
+        glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const GLfloat*)lightModel);
+
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
         glBindVertexArray(0);
 
         // render end; swaps buffers aka renders changes
