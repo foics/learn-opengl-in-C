@@ -29,8 +29,6 @@ Uint32 time_left(void) {
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-float xPos = WIDTH / 2, yPos = HEIGHT / 2;
-
 bool should_quit = false;
 
 vec3 cameraPos = {0.0f, 0.0f, 3.0f};
@@ -42,92 +40,63 @@ float fov = 45.0f;
 float yaw = -90.0f;
 float pitch = 0;
 
-void input_handler(SDL_KeyboardEvent *e) {
+void input_handler() {
     const float cameraSpeed = 0.05f;
 
-    if (e->type == SDL_KEYDOWN) {
-        if (e->keysym.sym == SDLK_w) {
-            vec3 result;
-            vec3_scale(result, cameraFront, cameraSpeed);
-            vec3_add(cameraPos, cameraPos, result);
-        } else if (e->keysym.sym == SDLK_s) {
-            vec3 result;
-            vec3_scale(result, cameraFront, cameraSpeed);
-            vec3_sub(cameraPos, cameraPos, result);
-        }
-
-        if (e->keysym.sym == SDLK_a) {
-            vec3 result;
-            vec3_mul_cross(result, cameraFront, cameraUp);
-            vec3 normalized;
-            vec3_norm(normalized, result);
-            vec3 final;
-            vec3_scale(final, normalized, cameraSpeed);
-            vec3_sub(cameraPos, cameraPos, final);
-        } else if (e->keysym.sym == SDLK_d) {
-            vec3 result;
-            vec3_mul_cross(result, cameraFront, cameraUp);
-            vec3 normalized;
-            vec3_norm(normalized, result);
-            vec3 final;
-            vec3_scale(final, normalized, cameraSpeed);
-            vec3_add(cameraPos, cameraPos, final);
-        }
-    } else if (e->state == SDL_RELEASED) {
-        if (e->keysym.sym == SDLK_w) {
-            return;
-        } else if (e->keysym.sym == SDLK_s) {
-            return;
-        }
-
-        if (e->keysym.sym == SDLK_a) {
-            return;
-        } else if (e->keysym.sym == SDLK_d) {
-            return;
-        }
-    }
-}
-
-bool firstMouse = false;
-void mouse_callback(SDL_Event *event) {
-    xPos = event->motion.xrel;
-    yPos = event->motion.yrel;
-
-    if (firstMouse) {
-        xPos = 0;
-        yPos = 0;
-        firstMouse = false;
+    const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+    if (currentKeyStates[SDL_SCANCODE_W]) {
+        vec3 result;
+        vec3_scale(result, cameraFront, cameraSpeed);
+        vec3_add(cameraPos, cameraPos, result);
+    } else if (currentKeyStates[SDL_SCANCODE_S]) {
+        vec3 result;
+        vec3_scale(result, cameraFront, cameraSpeed);
+        vec3_sub(cameraPos, cameraPos, result);
     }
 
-    // float xOffset = xPos - lastX;
-    // float yOffset = lastY - yPos;
-    // lastX = xPos;
-    // lastY = yPos;
+    if (currentKeyStates[SDL_SCANCODE_A]) {
+        vec3 result;
+        vec3_mul_cross(result, cameraFront, cameraUp);
+        vec3 normalized;
+        vec3_norm(normalized, result);
+        vec3 final;
+        vec3_scale(final, normalized, cameraSpeed);
+        vec3_sub(cameraPos, cameraPos, final);
+    } else if (currentKeyStates[SDL_SCANCODE_D]) {
+        vec3 result;
+        vec3_mul_cross(result, cameraFront, cameraUp);
+        vec3 normalized;
+        vec3_norm(normalized, result);
+        vec3 final;
+        vec3_scale(final, normalized, cameraSpeed);
+        vec3_add(cameraPos, cameraPos, final);
+    }
 
-    const float sensitivity = 0.1f;
-    yaw += xPos * sensitivity;
-    pitch -= yPos * sensitivity;
+    const float sensitivity = 2.0f;
+    if (currentKeyStates[SDL_SCANCODE_LEFT]) {
+        yaw -= sensitivity;
 
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
+    } else if (currentKeyStates[SDL_SCANCODE_RIGHT]) {
+        yaw += sensitivity;
+    }
+
+    if (currentKeyStates[SDL_SCANCODE_UP]) {
+        pitch += sensitivity;
+
+        if (pitch > 89.0f)
+            pitch = 89.0f;
+    } else if (currentKeyStates[SDL_SCANCODE_DOWN]) {
+        pitch -= sensitivity;
+
+        if (pitch < -89.0f)
+            pitch = -89.0f;
+    }
 
     vec3 direction;
     direction[0] = cos(yaw * (M_PI / 180)) * cos(pitch * (M_PI / 180));
     direction[1] = sin(pitch * (M_PI / 180));
     direction[2] = sin(yaw * (M_PI / 180)) * cos(pitch * (M_PI / 180));
     vec3_norm(cameraFront, direction);
-
-    printf("Mouse Position: (%f, %f)\n", xPos, yPos);
-}
-
-void scroll_callback(SDL_Event *event) {
-    fov -= (float)event->wheel.y;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
 }
 
 int main(int argc, char *argv[]) {
@@ -175,10 +144,7 @@ int main(int argc, char *argv[]) {
 
     glEnable(GL_DEPTH_TEST);
 
-    SDL_SetRelativeMouseMode(true);
-    SDL_ShowCursor(true);
-
-    SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
+    SDL_ShowCursor(false);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -345,9 +311,6 @@ int main(int argc, char *argv[]) {
 
     float rotTimer = 0.0f;
 
-    float xPos = 0.0;
-    float yPos = 0.0;
-
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
         SDL_Event event;
@@ -356,20 +319,12 @@ int main(int argc, char *argv[]) {
                 case SDL_QUIT:
                     should_quit = true;
                     break;
-                case SDL_KEYDOWN:
-                case SDL_KEYUP:
-                    input_handler(&event.key);
-                    break;
-                case SDL_MOUSEMOTION:
-                    mouse_callback(&event);
-                    break;
-                case SDL_MOUSEWHEEL:
-                    scroll_callback(&event);
-                    break;
                 default:
                     break;
             }
         }
+
+        input_handler();
 
         rotTimer++;
 
