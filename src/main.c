@@ -230,6 +230,8 @@ int main(int argc, char *argv[]) {
 
     float rotTimer = 0.0f;
 
+    glUseProgram(shader_default);
+
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
         SDL_Event event;
@@ -253,15 +255,40 @@ int main(int argc, char *argv[]) {
 
         glUseProgram(shader_default);
 
-        unsigned int objectColor = glGetUniformLocation(shader_default, "objectColor");
-        glUniform3f(objectColor, 1.0f, 0.5f, 0.31f);
-
-        unsigned int lightColor = glGetUniformLocation(shader_default, "lightColor");
-        glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
-
         vec3 lightCoords = {sin(rotTimer / 100), 1.0f, cos(rotTimer / 100)};
-        unsigned int lightPos = glGetUniformLocation(shader_default, "lightPos");
+        unsigned int lightPos = glGetUniformLocation(shader_default, "light.position");
         glUniform3f(lightPos, lightCoords[0], lightCoords[1], lightCoords[2]);
+
+        unsigned int ambient = glGetUniformLocation(shader_default, "material.ambient");
+        glUniform3f(ambient, 1.0f, 0.5f, 0.31f);
+
+        unsigned int diffuse = glGetUniformLocation(shader_default, "material.diffuse");
+        glUniform3f(diffuse, 1.0f, 0.5f, 0.31f);
+
+        unsigned int specular = glGetUniformLocation(shader_default, "material.specular");
+        glUniform3f(specular, 0.5f, 0.5f, 0.5f);
+
+        unsigned int shininess = glGetUniformLocation(shader_default, "material.shininess");
+        glUniform1f(shininess, 32.0f);
+
+        vec3 lightColor;
+        lightColor[0] = sin((rotTimer / 100) * 2.0f);
+        lightColor[1] = sin((rotTimer / 100) * 0.7f);
+        lightColor[2] = sin((rotTimer / 100) * 1.3f);
+
+        vec3 diffuseColor;
+        vec3_scale(diffuseColor, lightColor, 0.5f);
+        vec3 ambientColor;
+        vec3_scale(ambientColor, diffuseColor, 0.2f);
+
+        unsigned int ambientLight = glGetUniformLocation(shader_default, "light.ambient");
+        glUniform3f(ambientLight, ambientColor[0], ambientColor[1], ambientColor[2]);
+
+        unsigned int diffuseLight = glGetUniformLocation(shader_default, "light.diffuse");
+        glUniform3f(diffuseLight, diffuseColor[0], diffuseColor[1], diffuseColor[2]);
+
+        unsigned int specularLight = glGetUniformLocation(shader_default, "light.specular");
+        glUniform3f(specularLight, lightColor[0], lightColor[1], lightColor[2]);
 
         unsigned int viewPos = glGetUniformLocation(shader_default, "viewPos");
         glUniform3f(viewPos, cameraPos[0], cameraPos[1], cameraPos[2]);
@@ -313,6 +340,9 @@ int main(int argc, char *argv[]) {
 
         unsigned int lightModelLoc = glGetUniformLocation(shader_light, "model");
         glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const GLfloat*)lightModel);
+
+        unsigned int lampColor = glGetUniformLocation(shader_light, "lampColor");
+        glUniform3f(lampColor, lightColor[0], lightColor[1], lightColor[2]);
 
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
