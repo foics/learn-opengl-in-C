@@ -286,6 +286,32 @@ int main(int argc, char *argv[]) {
         printf("Failed to load texture container2_specular.png\n");
     }
 
+    float cubePositions[] = {
+         0.0f,  0.0f,  0.0f,
+         2.0f,  5.0f, -15.0f,
+        -1.5f, -2.2f, -2.5f,
+        -3.8f, -2.0f, -12.3f,
+         2.4f, -0.4f, -3.5f,
+        -1.7f,  3.0f, -7.5f,
+         1.3f, -2.0f, -2.5f,
+         1.5f,  2.0f, -2.5f,
+         1.5f,  0.2f, -1.5f,
+        -1.3f,  1.0f, -1.5f
+    };
+
+    // directional lighting
+    // unsigned int lightDirection = glGetUniformLocation(shader_default, "light.direction");
+    // glUniform3f(lightDirection, -0.2f, -1.0f, -0.3f);
+
+    unsigned int constantLight = glGetUniformLocation(shader_default, "light.constant");
+    glUniform1f(constantLight, 1.0f);
+
+    unsigned int linearLight = glGetUniformLocation(shader_default, "light.linear");
+    glUniform1f(linearLight, 0.09f);
+
+    unsigned int quadraticLight = glGetUniformLocation(shader_default, "light.quadratic");
+    glUniform1f(quadraticLight, 0.032f);
+
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
         SDL_Event event;
@@ -309,9 +335,17 @@ int main(int argc, char *argv[]) {
 
         glUseProgram(shader_default);
 
-        vec3 lightCoords = {sin(rotTimer / 100), 1.0f, cos(rotTimer / 100)};
         unsigned int lightPos = glGetUniformLocation(shader_default, "light.position");
-        glUniform3f(lightPos, lightCoords[0], lightCoords[1], lightCoords[2]);
+        glUniform3f(lightPos, cameraPos[0], cameraPos[1], cameraPos[2]);
+
+        unsigned int lightDir = glGetUniformLocation(shader_default, "light.direction");
+        glUniform3f(lightDir, cameraFront[0], cameraFront[1], cameraFront[2]);
+
+        unsigned int lightCutOff = glGetUniformLocation(shader_default, "light.cutOff");
+        glUniform1f(lightCutOff, cos(12.5f * (M_PI / 180)));
+
+        unsigned int lightOuterCutOff = glGetUniformLocation(shader_default, "light.outerCutOff");
+        glUniform1f(lightOuterCutOff, cos(17.5f * (M_PI / 180)));
 
         unsigned int shininess = glGetUniformLocation(shader_default, "material.shininess");
         glUniform1f(shininess, 64.0f);
@@ -352,12 +386,6 @@ int main(int argc, char *argv[]) {
         unsigned int viewLoc = glGetUniformLocation(shader_default, "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat*)view);
 
-        mat4x4 model;
-        mat4x4_identity(model);
-
-        unsigned int modelLoc = glGetUniformLocation(shader_default, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat*)model);
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -365,38 +393,52 @@ int main(int argc, char *argv[]) {
         glBindTexture(GL_TEXTURE_2D, specularMap);
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glUseProgram(shader_light);
+        for (unsigned int i = 0; i < 10; i++) {
 
-        mat4x4 lightProjection;
-        mat4x4_perspective(lightProjection, fov * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
+            mat4x4 model;
+            mat4x4_identity(model);
+            mat4x4_translate(model, cubePositions[i * 3], cubePositions[i * 3 + 1], cubePositions[i * 3 + 2]);
+            float angle = 20.0f * i;
+            mat4x4 result;
+            mat4x4_rotate(result, model, 1.0f, 0.3f, 0.5f, (rotTimer / 100) * angle * (M_PI / 180));
 
-        unsigned int lightProjectionLoc = glGetUniformLocation(shader_light, "projection");
-        glUniformMatrix4fv(lightProjectionLoc, 1, GL_FALSE, (const GLfloat*)lightProjection);
+            unsigned int modelLoc = glGetUniformLocation(shader_default, "model");
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat*)result);
 
-        mat4x4 lightView;
-        vec3 lightCameraOrigin;
-        vec3_add(lightCameraOrigin, cameraPos, cameraFront);
-        mat4x4_look_at(lightView, cameraPos, cameraOrigin, cameraUp);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
-        unsigned int lightViewLoc = glGetUniformLocation(shader_light, "view");
-        glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, (const GLfloat*)lightView);
+        // glUseProgram(shader_light);
 
-        mat4x4 lightModel;
-        mat4x4_identity(lightModel);
-        mat4x4_translate(lightModel, lightCoords[0], lightCoords[1], lightCoords[2]);
-        // for whatever reason only the aniso func works
-        mat4x4_scale_aniso(lightModel, lightModel, 0.2f, 0.2f, 0.2f);
+        // mat4x4 lightProjection;
+        // mat4x4_perspective(lightProjection, fov * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
 
-        unsigned int lightModelLoc = glGetUniformLocation(shader_light, "model");
-        glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const GLfloat*)lightModel);
+        // unsigned int lightProjectionLoc = glGetUniformLocation(shader_light, "projection");
+        // glUniformMatrix4fv(lightProjectionLoc, 1, GL_FALSE, (const GLfloat*)lightProjection);
 
-        unsigned int lampColor = glGetUniformLocation(shader_light, "lampColor");
-        glUniform3f(lampColor, lightColor[0], lightColor[1], lightColor[2]);
+        // mat4x4 lightView;
+        // vec3 lightCameraOrigin;
+        // vec3_add(lightCameraOrigin, cameraPos, cameraFront);
+        // mat4x4_look_at(lightView, cameraPos, cameraOrigin, cameraUp);
 
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // unsigned int lightViewLoc = glGetUniformLocation(shader_light, "view");
+        // glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, (const GLfloat*)lightView);
+
+        // mat4x4 lightModel;
+        // mat4x4_identity(lightModel);
+        // mat4x4_translate(lightModel, lightCoords[0], lightCoords[1], lightCoords[2]);
+        // // for whatever reason only the aniso func works
+        // mat4x4_scale_aniso(lightModel, lightModel, 0.2f, 0.2f, 0.2f);
+
+        // unsigned int lightModelLoc = glGetUniformLocation(shader_light, "model");
+        // glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const GLfloat*)lightModel);
+
+        // unsigned int lampColor = glGetUniformLocation(shader_light, "lampColor");
+        // glUniform3f(lampColor, lightColor[0], lightColor[1], lightColor[2]);
+
+        // glBindVertexArray(lightVAO);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glBindVertexArray(0);
 
