@@ -300,17 +300,102 @@ int main(int argc, char *argv[]) {
     };
 
     // directional lighting
-    // unsigned int lightDirection = glGetUniformLocation(shader_default, "light.direction");
-    // glUniform3f(lightDirection, -0.2f, -1.0f, -0.3f);
+    unsigned int lightDirection = glGetUniformLocation(shader_default, "dirLight.direction");
+    glUniform3f(lightDirection, -0.2f, -1.0f, -0.3f);
 
-    unsigned int constantLight = glGetUniformLocation(shader_default, "light.constant");
-    glUniform1f(constantLight, 1.0f);
+    float pointLightPositions[] = {
+         0.7f,  0.2f,  2.0f,
+         2.3f, -3.3f, -4.0f,
+        -4.0f,  2.0f, -12.0f,
+         0.0f,  0.0f, -3.0f
+    };
 
-    unsigned int linearLight = glGetUniformLocation(shader_default, "light.linear");
-    glUniform1f(linearLight, 0.09f);
+    unsigned int pointLightPos0 = glGetUniformLocation(shader_default, "pointLights[0].position");
+    glUniform3f(pointLightPos0, pointLightPositions[0], pointLightPositions[1], pointLightPositions[2]);
 
-    unsigned int quadraticLight = glGetUniformLocation(shader_default, "light.quadratic");
-    glUniform1f(quadraticLight, 0.032f);
+    unsigned int pointLightAmbient0 = glGetUniformLocation(shader_default, "pointLights[0].ambient");
+    glUniform3f(pointLightAmbient0, 0.05f, 0.05f, 0.05f);
+
+    unsigned int pointLightDiffuse0 = glGetUniformLocation(shader_default, "pointLights[0].diffuse");
+    glUniform3f(pointLightDiffuse0, 0.8f, 0.8f, 0.8f);
+
+    unsigned int pointLightSpecular0 = glGetUniformLocation(shader_default, "pointLights[0].specular");
+    glUniform3f(pointLightSpecular0, 1.0f, 1.0f, 1.0f);
+
+    unsigned int pointLightConstant0 = glGetUniformLocation(shader_default, "pointLights[0].constant");
+    glUniform1f(pointLightConstant0, 1.0f);
+
+    unsigned int pointLightLinear0 = glGetUniformLocation(shader_default, "pointLights[0].linear");
+    glUniform1f(pointLightLinear0, 0.09f);
+
+    unsigned int pointLightQuadratic0 = glGetUniformLocation(shader_default, "pointLights[0].quadratic");
+    glUniform1f(pointLightQuadratic0, 0.032f);
+
+
+    unsigned int pointLightPos1 = glGetUniformLocation(shader_default, "pointLights[1].position");
+    glUniform3f(pointLightPos1, pointLightPositions[3], pointLightPositions[4], pointLightPositions[5]);
+
+    unsigned int pointLightAmbient1 = glGetUniformLocation(shader_default, "pointLights[1].ambient");
+    glUniform3f(pointLightAmbient1, 0.05f, 0.05f, 0.05f);
+
+    unsigned int pointLightDiffuse1 = glGetUniformLocation(shader_default, "pointLights[1].diffuse");
+    glUniform3f(pointLightDiffuse1, 0.8f, 0.8f, 0.8f);
+
+    unsigned int pointLightSpecular1 = glGetUniformLocation(shader_default, "pointLights[1].specular");
+    glUniform3f(pointLightSpecular1, 1.0f, 1.0f, 1.0f);
+
+    unsigned int pointLightConstant1 = glGetUniformLocation(shader_default, "pointLights[1].constant");
+    glUniform1f(pointLightConstant1, 1.0f);
+
+    unsigned int pointLightLinear1 = glGetUniformLocation(shader_default, "pointLights[1].linear");
+    glUniform1f(pointLightLinear1, 0.09f);
+
+    unsigned int pointLightQuadratic1 = glGetUniformLocation(shader_default, "pointLights[1].quadratic");
+    glUniform1f(pointLightQuadratic1, 0.032f);
+
+
+    unsigned int pointLightPos2 = glGetUniformLocation(shader_default, "pointLights[2].position");
+    glUniform3f(pointLightPos2, pointLightPositions[6], pointLightPositions[7], pointLightPositions[8]);
+
+    unsigned int pointLightAmbient2 = glGetUniformLocation(shader_default, "pointLights[2].ambient");
+    glUniform3f(pointLightAmbient2, 0.05f, 0.05f, 0.05f);
+
+    unsigned int pointLightDiffuse2 = glGetUniformLocation(shader_default, "pointLights[2].diffuse");
+    glUniform3f(pointLightDiffuse2, 0.8f, 0.8f, 0.8f);
+
+    unsigned int pointLightSpecular2 = glGetUniformLocation(shader_default, "pointLights[2].specular");
+    glUniform3f(pointLightSpecular2, 1.0f, 1.0f, 1.0f);
+
+    unsigned int pointLightConstant2 = glGetUniformLocation(shader_default, "pointLights[2].constant");
+    glUniform1f(pointLightConstant2, 1.0f);
+
+    unsigned int pointLightLinear2 = glGetUniformLocation(shader_default, "pointLights[2].linear");
+    glUniform1f(pointLightLinear2, 0.09f);
+
+    unsigned int pointLightQuadratic2 = glGetUniformLocation(shader_default, "pointLights[2].quadratic");
+    glUniform1f(pointLightQuadratic2, 0.032f);
+
+
+    unsigned int pointLightPos3 = glGetUniformLocation(shader_default, "pointLights[3].position");
+    glUniform3f(pointLightPos3, pointLightPositions[9], pointLightPositions[10], pointLightPositions[11]);
+
+    unsigned int pointLightAmbient3 = glGetUniformLocation(shader_default, "pointLights[3].ambient");
+    glUniform3f(pointLightAmbient3, 0.05f, 0.05f, 0.05f);
+
+    unsigned int pointLightDiffuse3 = glGetUniformLocation(shader_default, "pointLights[3].diffuse");
+    glUniform3f(pointLightDiffuse3, 0.8f, 0.8f, 0.8f);
+
+    unsigned int pointLightSpecular3 = glGetUniformLocation(shader_default, "pointLights[3].specular");
+    glUniform3f(pointLightSpecular3, 1.0f, 1.0f, 1.0f);
+
+    unsigned int pointLightConstant3 = glGetUniformLocation(shader_default, "pointLights[3].constant");
+    glUniform1f(pointLightConstant3, 1.0f);
+
+    unsigned int pointLightLinear3 = glGetUniformLocation(shader_default, "pointLights[3].linear");
+    glUniform1f(pointLightLinear3, 0.09f);
+
+    unsigned int pointLightQuadratic3 = glGetUniformLocation(shader_default, "pointLights[3].quadratic");
+    glUniform1f(pointLightQuadratic3, 0.032f);
 
     next_time = SDL_GetTicks() + TICK_INTERVAL;
     while (!should_quit) {
@@ -330,22 +415,40 @@ int main(int argc, char *argv[]) {
         rotTimer++;
 
         // render begin
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shader_default);
 
-        unsigned int lightPos = glGetUniformLocation(shader_default, "light.position");
-        glUniform3f(lightPos, cameraPos[0], cameraPos[1], cameraPos[2]);
+        unsigned int spotLightPos = glGetUniformLocation(shader_default, "spotLight.position");
+        glUniform3f(spotLightPos, cameraPos[0], cameraPos[1], cameraPos[2]);
 
-        unsigned int lightDir = glGetUniformLocation(shader_default, "light.direction");
-        glUniform3f(lightDir, cameraFront[0], cameraFront[1], cameraFront[2]);
+        unsigned int spotLightDir = glGetUniformLocation(shader_default, "spotLight.direction");
+        glUniform3f(spotLightDir, cameraFront[0], cameraFront[1], cameraFront[2]);
 
-        unsigned int lightCutOff = glGetUniformLocation(shader_default, "light.cutOff");
-        glUniform1f(lightCutOff, cos(12.5f * (M_PI / 180)));
+        unsigned int spotLightAmbient = glGetUniformLocation(shader_default, "spotLight.ambient");
+        glUniform3f(spotLightAmbient, 0.0f, 0.0f, 0.0f);
 
-        unsigned int lightOuterCutOff = glGetUniformLocation(shader_default, "light.outerCutOff");
-        glUniform1f(lightOuterCutOff, cos(17.5f * (M_PI / 180)));
+        unsigned int spotLightDiffuse = glGetUniformLocation(shader_default, "spotLight.diffuse");
+        glUniform3f(spotLightDiffuse, 1.0f, 1.0f, 1.0f);
+
+        unsigned int spotLightSpecular = glGetUniformLocation(shader_default, "spotLight.specular");
+        glUniform3f(spotLightSpecular, 1.0f, 1.0f, 1.0f);
+
+        unsigned int spotLightConstant = glGetUniformLocation(shader_default, "spotLight.constant");
+        glUniform1f(spotLightConstant, 1.0f);
+
+        unsigned int spotLightLinear = glGetUniformLocation(shader_default, "spotLight.linear");
+        glUniform1f(spotLightLinear, 0.09f);
+
+        unsigned int spotLightQuadratic = glGetUniformLocation(shader_default, "spotLight.quadratic");
+        glUniform1f(spotLightQuadratic, 0.032f);
+
+        unsigned int spotLightCutOff = glGetUniformLocation(shader_default, "spotLight.cutOff");
+        glUniform1f(spotLightCutOff, cos(12.5f * (M_PI / 180)));
+
+        unsigned int spotLightOuterCutOff = glGetUniformLocation(shader_default, "spotLight.outerCutOff");
+        glUniform1f(spotLightOuterCutOff, cos(17.5f * (M_PI / 180)));
 
         unsigned int shininess = glGetUniformLocation(shader_default, "material.shininess");
         glUniform1f(shininess, 64.0f);
@@ -409,36 +512,31 @@ int main(int argc, char *argv[]) {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        // glUseProgram(shader_light);
+        glUseProgram(shader_light);
 
-        // mat4x4 lightProjection;
-        // mat4x4_perspective(lightProjection, fov * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
+        unsigned int lightProjectionLoc = glGetUniformLocation(shader_light, "projection");
+        glUniformMatrix4fv(lightProjectionLoc, 1, GL_FALSE, (const GLfloat*)projection);
 
-        // unsigned int lightProjectionLoc = glGetUniformLocation(shader_light, "projection");
-        // glUniformMatrix4fv(lightProjectionLoc, 1, GL_FALSE, (const GLfloat*)lightProjection);
-
-        // mat4x4 lightView;
-        // vec3 lightCameraOrigin;
-        // vec3_add(lightCameraOrigin, cameraPos, cameraFront);
-        // mat4x4_look_at(lightView, cameraPos, cameraOrigin, cameraUp);
-
-        // unsigned int lightViewLoc = glGetUniformLocation(shader_light, "view");
-        // glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, (const GLfloat*)lightView);
-
-        // mat4x4 lightModel;
-        // mat4x4_identity(lightModel);
-        // mat4x4_translate(lightModel, lightCoords[0], lightCoords[1], lightCoords[2]);
-        // // for whatever reason only the aniso func works
-        // mat4x4_scale_aniso(lightModel, lightModel, 0.2f, 0.2f, 0.2f);
-
-        // unsigned int lightModelLoc = glGetUniformLocation(shader_light, "model");
-        // glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const GLfloat*)lightModel);
+        unsigned int lightViewLoc = glGetUniformLocation(shader_light, "view");
+        glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, (const GLfloat*)view);
 
         // unsigned int lampColor = glGetUniformLocation(shader_light, "lampColor");
         // glUniform3f(lampColor, lightColor[0], lightColor[1], lightColor[2]);
 
-        // glBindVertexArray(lightVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(lightVAO);
+        for (int i = 0; i < 4; i++) {
+
+            mat4x4 lightModel;
+            mat4x4_identity(lightModel);
+            mat4x4_translate(lightModel, pointLightPositions[i * 3], pointLightPositions[i * 3 + 1], pointLightPositions[i * 3 +2]);
+            // for whatever reason only the aniso func works
+            mat4x4_scale_aniso(lightModel, lightModel, 0.2f, 0.2f, 0.2f);
+
+            unsigned int lightModelLoc = glGetUniformLocation(shader_light, "model");
+            glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const GLfloat*)lightModel);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         glBindVertexArray(0);
 
