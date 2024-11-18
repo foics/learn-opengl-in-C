@@ -7,6 +7,9 @@
 #include <linmath.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "shader.h"
 
