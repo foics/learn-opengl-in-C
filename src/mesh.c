@@ -2,22 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stb/stb_image.h>
 
 #include "mesh.h"
-
-Mesh* createMesh(Vertex* vertices, size_t numVertices, unsigned int* indices, size_t numIndices, Texture* textures, size_t numTextures) {
-    Mesh* mesh = (Mesh*)malloc(sizeof(Mesh));
-    mesh->vertices = vertices;
-    mesh->numVertices = numVertices;
-    mesh->indices = indices;
-    mesh->numIndices = numIndices;
-    mesh->textures = textures;
-    mesh->numTextures = numTextures;
-
-    setupMesh(mesh);
-
-    return mesh;
-}
 
 void setupMesh(Mesh* mesh) {
     glGenVertexArrays(1, &mesh->VAO);
@@ -50,25 +37,62 @@ void drawMesh(Mesh *mesh, unsigned int shader) {
     for (unsigned int i = 0; i < mesh->numTextures; i++) {
         glActiveTexture(GL_TEXTURE0 + i);
 
-        const char* textureType = mesh->textures[i].type;
-        char number[32];
+        Texture *texture = &mesh->textures[i];
+        int number = 0;
 
-        if (strcmp(textureType, "texture_diffuse") == 0) {
-            snprintf(number, sizeof(number), "%d", diffuseNr++);
-        } else if (strcmp(textureType, "texture_specular") == 0) {
-            snprintf(number, sizeof(number), "%d", specularNr++);
+        if (strcmp("texture_diffuse", texture->type) == 0) {
+            number = diffuseNr;
+            ++diffuseNr;
+        } else if (strcmp("texture_specular", texture->type) == 0) {
+            number = specularNr;
+            ++specularNr;
         }
 
-        char uniformName[64];
-        snprintf(uniformName, sizeof(uniformName), "material.%s%d", textureType, number);
+        char uniformName[256];
+        sprintf(uniformName, "material.%s%i", texture->type, number);
         glUniform1i(glGetUniformLocation(shader, uniformName), i);
 
-        glBindTexture(GL_TEXTURE_2D, mesh->textures[i].id);
+        glBindTexture(GL_TEXTURE_2D, texture->id);
     }
 
     glActiveTexture(GL_TEXTURE0);
 
     glBindVertexArray(mesh->VAO);
-    glDrawElements(GL_TRIANGLES, mesh->numIndices, GL_UNSIGNED_BYTE, 0);
+    glDrawElements(GL_TRIANGLES, mesh->numIndices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+
+unsigned int initTexture(const char* imageName) {
+    stbi_set_flip_vertically_on_load(true);
+
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(imageName, &width, &height, &nrChannels, 0);
+    if (!data) {
+        printf("Error: Failed to load texture %s\n", imageName);
+        return 0;
+    }
+
+    GLenum format = GL_RGB;
+    if (nrChannels == 1) {
+        format = GL_RED;
+    } else if (nrChannels == 3) {
+        format = GL_RGB;
+    } else if (nrChannels == 4) {
+        format = GL_RGBA;
+    }
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_image_free(data);
+
+    return texture;
 }
