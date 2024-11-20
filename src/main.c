@@ -25,8 +25,8 @@ Uint32 time_left(void) {
     }
 }
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 1920;
+const int HEIGHT = 1080;
 
 bool should_quit = false;
 
@@ -373,7 +373,7 @@ int main(int argc, char *argv[]) {
         glUniform3f(viewPos, cameraPos[0], cameraPos[1], cameraPos[2]);
 
         mat4x4 projection;
-        mat4x4_perspective(projection, fov * (M_PI / 180), WIDTH/HEIGHT, 0.1f, 100.0f);
+        mat4x4_perspective(projection, fov * (M_PI / 180), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
         unsigned int projectionLoc = glGetUniformLocation(shader_default, "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat*)projection);
