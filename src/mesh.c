@@ -55,11 +55,11 @@ void drawMesh(Mesh *mesh, unsigned int shader) {
         glBindTexture(GL_TEXTURE_2D, texture->id);
     }
 
-    glActiveTexture(GL_TEXTURE0);
-
     glBindVertexArray(mesh->VAO);
     glDrawElements(GL_TRIANGLES, mesh->numIndices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+
+    glActiveTexture(GL_TEXTURE0);
 }
 
 unsigned int initTexture(const char* imageName) {

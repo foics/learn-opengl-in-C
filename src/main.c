@@ -368,24 +368,6 @@ int main(int argc, char *argv[]) {
         unsigned int shininess = glGetUniformLocation(shader_default, "material.shininess");
         glUniform1f(shininess, 64.0f);
 
-        vec3 lightColor;
-        lightColor[0] = 1.0f;
-        lightColor[1] = 1.0f;
-        lightColor[2] = 1.0f;
-
-        vec3 diffuseColor;
-        vec3_scale(diffuseColor, lightColor, 0.5f);
-        vec3 ambientColor;
-        vec3_scale(ambientColor, diffuseColor, 0.2f);
-
-        unsigned int ambientLight = glGetUniformLocation(shader_default, "light.ambient");
-        glUniform3f(ambientLight, ambientColor[0], ambientColor[1], ambientColor[2]);
-
-        unsigned int diffuseLight = glGetUniformLocation(shader_default, "light.diffuse");
-        glUniform3f(diffuseLight, diffuseColor[0], diffuseColor[1], diffuseColor[2]);
-
-        unsigned int specularLight = glGetUniformLocation(shader_default, "light.specular");
-        glUniform3f(specularLight, lightColor[0], lightColor[1], lightColor[2]);
 
         unsigned int viewPos = glGetUniformLocation(shader_default, "viewPos");
         glUniform3f(viewPos, cameraPos[0], cameraPos[1], cameraPos[2]);
